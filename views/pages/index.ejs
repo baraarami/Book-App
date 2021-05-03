@@ -11,18 +11,31 @@
     <link rel="stylesheet" href="../styles/reset.css">
 
 </head>
-<header>
-  <h1>Book App</h1>
-</header>
-<body>
 
+<body>
+ <%- include ('../layout/header') %>
   <h1>My Book Collection</h1>
-    <nav>
-        <ul>
-          <li><a href='/'>Homepage</a></li>
-          <li><a href=/searches/new>Search Books</a></li>
-        </ul>
-      </nav>
-    
+   
+
+
+
+
+
+
+  
+    <main>
+      <h1>YOU GOT : <%= booksdata.length %> books</h1>
+      <% booksdata.forEach(book =>{%>
+        <div>
+          <img src="<%= book.url %>" alt="">
+          <h2>
+            Title :<%= book.title %>
+          </h2>
+          
+          <h3><a href="/views/pages/books/<%=book.id%>">view detalies</a></h3>
+        </div>
+
+      <% })%>
+    </main>
 </body>
 </html>
