@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="../styles/reset.css">
 
 </head>
+<header>
+  <h1>Book App</h1>
+</header>
 <body>
 
     <nav>
@@ -23,22 +26,20 @@
 
     <main>
         <h4>Search By Title Or Auther</h4>
+
         <form action="/searches" method="POST">
-        <input class="name" type="text" name="Searchby" placeholder="Enter A Title Or Auther">
-        <fieldset>
-            <label for="title">
-                <span>Title</span>
-                <input type="radio" name="searchby" value="title" required>
-            </label>
-        </fieldset>
-        
-<fieldset>
-<label for="auther">
-    <span>Auther</span>
-    <input type="radio" name="searchby" value="auther" required>
-</label>
-</fieldset>    
-<button type="submit">Search The Google Book API</button>
+        <input class="name" type="text" name="Search" placeholder="Enter A Title Or Auther" required>
+         
+        <aside class="radio">
+     <label for="title">Title</label>
+     <input type="radio" name="type" value="title" checked required>
+<br>
+<br>
+
+     <label for="Auther">Auther</label>
+     <input type="radio" name="type" value="auther" required>
+        </aside>
+    <button type="submit">Search The Google Book API</button>
     </form>
     </main>
 </body>
