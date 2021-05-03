@@ -11,24 +11,14 @@
     <link rel="stylesheet" href="../styles/reset.css">
 
 </head>
-<header>
-  <h1>Book App</h1>
-</header>
+
 <body>
-
-    <nav>
-         
-        <ul>
-          <li><a href='/'>Homepage</a></li>
-          <li><a href=/searches/new>Search</a></li>
-        </ul>
-      </nav>
-
+  <%- include ('../layout/header') %>
     <main>
         <h4>Search By Title Or Auther</h4>
 
         <form action="/searches" method="POST">
-        <input class="name" type="text" name="Search" placeholder="Enter A Title Or Auther" required>
+        <input class="name" type="text" name="search" placeholder="Enter A Title Or Auther" required>
          
         <aside class="radio">
      <label for="title">Title</label>

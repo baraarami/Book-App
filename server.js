@@ -1,9 +1,13 @@
 'use strict'
 
-require('dotenv').config();
+
+
 const { request, response } = require('express');
 const express =require('express');
+const pg = require('pg');
+const { saveCookies } = require('superagent');
 const superagent=require('superagent');
+require('dotenv').config();
 
 const PORT =process.env.PORT || 4000;
 const app =express();
@@ -12,12 +16,16 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(express.urlencoded({extend:true}));
 
+const client = new pg.Client(process.env.DATABASE_URL);
 
 
 
-
+ 
 app.get('/' , (request , response)=>{
-    response.render('pages/index');
+    let SQL=`SELECT * FROM books;`;
+    client.query(SQL).then(data =>{
+        response.render('pages/index.ejs' , {booksdata: data.rows});
+    });
 });
 
 
@@ -30,7 +38,7 @@ app.get('/searches',(request , response)=>{
 
     let search = request.body.search;
     let type = request.body.type;
-    let url=`https://www.googleapis.com/books/v1/volumes?q=${search}:${type}`;
+    let url=`https://www.googleapis.com/books/v1/volumes?q=search+${type}:${search}&maxResults=10`;
 
 
     superagent.get(url)
@@ -42,10 +50,31 @@ app.get('/searches',(request , response)=>{
         response.render('pages/searches/show' , {bookArr : bookinfo});
     })
     .catch(error =>{
-        response.render('pages/error');
+        response.render('pages/error' ,{error:err});
+    });
+});
+app.post('/addbook' , (request, response)=>{
+    let SQL = 'INSERT INTO books (url , title , auther , description) VALUES ($1 , $2 ,$3 , $4) RETURNING *;';
+    let safevalue = [request.body.url , request.body.title , request.body.auther , request.body.descreption];
+    client.query(SQL , safevalue).then (result =>{
+        response.redirect('/books/${result.row[0].id}');
+    }).catch (error =>{
+        response.render('pages/error' , {error:error});
     });
 });
 
+
+
+app.get('/books/:id' , (request , response)=>{
+    let bookId=request.params.id;
+    let SQL= `SELECT * FROM books WHERE id =$1;`;
+    let safevalue=[bookId];
+    client.query(SQL , safevalue).then(result=>{
+        response.render('pages/detail' , {book :result.rows[0]});
+    }).catch(error =>{
+        response.render('pages/error' ,{error:err});
+    });
+});
 
 app.get('/hello' , (request , response)=>{
     response.render('pages/index');

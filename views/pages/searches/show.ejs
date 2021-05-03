@@ -11,32 +11,30 @@
     <link rel="stylesheet" href="../styles/reset.css">
 
 </head>
-<header>
-  <h1>Book App</h1>
-</header>
-<nav>   
-    <ul>
-      <li><a href='/'>Homepage</a></li>
-      <li><a href=/searches/new>Search</a></li>
-    </ul>
-  </nav>
+
+<%-include ('../layout/header') %>
 <body>
     <main>
      <h1>Book List </h1>
 
      <section>
        <% bookArr.forEach(book=>{ %>
-          <div>
-            <img src="<%= book.url %>" alt="">
-
-            <h2><%= book.title %></h2>
-
-            <h3><%= book.auther %></h3>
-
-            <p>
-              <%= book.descreption %>
-            </p>
-          </div>
+       <form action="/addbook" method="POST" class="book">
+        <img src="<%= book.url %>" alt="">
+      <input type="hidden" name="url" value="<%= book.url%>">
+      
+      <h2>Title : <%= book.title %></h2>
+      <input type="hidden" name="title" value="<%= book.title %>">
+      
+      <h3>Auther : <%= book.auther %></h3>
+      <input type="hidden" name="auther" value="<%= book.auther %>">
+      
+      <p><%= book.descreption %></p>
+      <input type="hidden" name="descreption" value="<%= book.descreption %>">
+       
+      <button>choose this book  </button>
+    
+    </form>
         <% }) %>
      </section>
     </main>
