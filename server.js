@@ -1,59 +1,82 @@
 'use strict'
 
+require('dotenv').config();
+const { request, response } = require('express');
 const express =require('express');
 const superagent=require('superagent');
 
-const app =express();
-app.use(express.urlencoded({extend:true}));
-app.use(express.static('public'));
 const PORT =process.env.PORT || 4000;
+const app =express();
 
 app.set('view engine', 'ejs');
-
-app.get('/' , renderHomePage);
-app.get ('/searches/new',showForm);
-app.get('/searches',creatSearch);
-
-app.get('*' ,(request , response) => 
-response.status(404).send ('The Page Does Not Exist'));
-
-app.listen(PORT , ()=> 
-console.log (`listining on port:${PORT}`));
+app.use(express.static('./public'));
+app.use(express.urlencoded({extend:true}));
 
 
 
-function Book(info){
-   const placeholderImage= 'https://i.imgur.com/J5LVHEL.jpg';
-   this.img=info.imageLinks || placeholderImage;
-   this.title=info.title || 'No Title Available ';
-   this.auther=info.auther || 'No Auther Available';
-   this.descreption=info.descreption || 'No Description Available';
-}
 
-function renderHomePage(request ,response){
-    response.render('pages/index.ejs');
-}
 
-function showForm(request , response){
+app.get('/' , (request , response)=>{
+    response.render('pages/index');
+});
+
+
+app.get ('/searches/new',(request , response)=>{
     response.render('pages/searches/new'); //put in the chrom :localhost:4000//searches/new
-}
-function creatSearch(request , response){
-    let url =`https://www.googleapis.com/books/v1/volumes?q=search+terms`;
-    const searchBy=request.body.searchBy;
-    const searchValue=request.body.searchby;
-    const queryObj={};
-    if (searchBy === 'title'){
-        queryObj['q']=`+intitle:${searchValue}`;
-    }else if (searchBy === 'auther'){
-        queryObj['q']=`+intitle:${searchValue}`;
+});
 
-    }
+app.get('/searches',(request , response)=>{
 
-    superagent.get(url).query(queryObj).then(apiResponse =>{
-        return apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo))
-    }).then(results =>{
-        response.render('pages/searches/show' , {searchResult : results})
+
+    let search = request.body.search;
+    let type = request.body.type;
+    let url=`https://www.googleapis.com/books/v1/volumes?q=${search}:${type}`;
+
+
+    superagent.get(url)
+    .then(booksdata => {
+        let bookdata=booksdata.body.items;
+        let bookinfo=bookdata.map((item) => {
+            return new Book(item);
+        });
+        response.render('pages/searches/show' , {bookArr : bookinfo});
+    })
+    .catch(error =>{
+        response.render('pages/error');
     });
+});
+
+
+app.get('/hello' , (request , response)=>{
+    response.render('pages/index');
+});
+
+app.get('*' ,(request , response) => {
+    response.render('pages/error');
+});
+
+
+app.listen(PORT , ()=> {
+    console.log (`listining on port:${PORT}`);
+});
+
+
+
+function Book(booksdata){
+    this.url=booksdata.volumeInfo.imageLinks;
+    if(Object.keys(this.url).length !==0){
+        this.url=this.url.thumbnail;
+    }else {
+        this.url = 'https://i.imgur.com/J5LVHEL.jpg';
+    }
+   this.title=booksdata.volumeInfo.title || 'No Title Available ';
+   this.auther=booksdata.volumeInfo.auther || 'No Auther Available';
+   this.descreption=booksdata.volumeInfo.descreption || 'No Description Available';
 }
+
+
+
+
+
 
 

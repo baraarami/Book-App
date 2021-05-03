@@ -3,79 +3,34 @@
     box-sizing: border-box;
 }
 
-body{
-    background-color: grey;
-    width: 600px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-h1{
-    font-size: 50px;
-    font-family: cursive;
-    text-align: center;
-    position: relative;
-    left: 500px;
-}
-
-h3{
-    padding-bottom: 20px;
-    text-align: center;
-}
-
-h4{
-    font-family: cursive;
-    padding-bottom: 20px;
-    text-align: center;
-}
-p{
-    height: 100px;
-    width: 400px;
-    overflow: auto;
-    text-overflow: ellipsis;
-    font-family: serif;
-}
-
-img{
-    border-radius: 12px;
-    border: 3px solid #997b66;
-}
-
-@media(min-width:960){
-    div{
+@media (max-width:767px){
+    header{
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        text-align: center;
+
     }
 }
-
-@media only screen and (min-width:768px) {
-    div{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 500px;
-    }
+h1 {
+  text-align: center;
+  font-size: large;
+  font-family: 'Krona One', sans-serif;
+  margin-top: 60px;
+  margin-bottom: 15px;
 }
-
 form input {
-    display: block;
-    width: 400px;
-    font-family: cursive;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+  width: 50%;
 }
 
-ul{
+div{
     display: flex;
-    flex-direction: column;
-    justify-content:space-around;
-    font-family: cursive;
-}
-button{
-    border-radius: 12px;
-    width: 150px;
-    height: 30px;
-    float: right;
-    font-family: cursive;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+  width: 60%;
 }
