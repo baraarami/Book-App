@@ -1,13 +1,13 @@
 'use strict'
 
-
-
-const { request, response } = require('express');
-const express =require('express');
-const pg = require('pg');
-const { saveCookies } = require('superagent');
-const superagent=require('superagent');
 require('dotenv').config();
+const express =require('express');
+const superagent=require('superagent');
+
+
+
+
+
 
 const PORT =process.env.PORT || 4000;
 const app =express();
@@ -16,15 +16,19 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(express.urlencoded({extend:true}));
 
+const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL);
 
 
-
+app.get('/hello' , (request , response)=>{
+    response.render('pages/index');
+});
  
 app.get('/' , (request , response)=>{
     let SQL=`SELECT * FROM books;`;
-    client.query(SQL).then(data =>{
-        response.render('pages/index.ejs' , {booksdata: data.rows});
+    client.query(SQL)
+    .then(data =>{
+        response.render('pages/index' , {booksdata: data.rows});
     });
 });
 
@@ -50,7 +54,7 @@ app.get('/searches',(request , response)=>{
         response.render('pages/searches/show' , {bookArr : bookinfo});
     })
     .catch(error =>{
-        response.render('pages/error' ,{error:err});
+        response.send(error);
     });
 });
 app.post('/addbook' , (request, response)=>{
@@ -76,9 +80,7 @@ app.get('/books/:id' , (request , response)=>{
     });
 });
 
-app.get('/hello' , (request , response)=>{
-    response.render('pages/index');
-});
+
 
 app.get('*' ,(request , response) => {
     response.render('pages/error');
